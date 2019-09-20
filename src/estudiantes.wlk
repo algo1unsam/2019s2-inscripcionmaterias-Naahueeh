@@ -75,7 +75,7 @@ class LibretaDeEstudiante {
 		}
 	}
 
-	method aproboEsa(materia) {
+	method aproboEsa(materia)  {
 		return self.materiasAprobadas().contains(materia)
 	}
 

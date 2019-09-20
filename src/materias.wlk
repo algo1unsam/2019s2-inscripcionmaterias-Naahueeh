@@ -4,7 +4,7 @@ class Carrera{
 	var property misMaterias=#{}
 	
 	method tengoEstaMateria(materia){
-		return self.misMaterias().contains(materia)
+		return  self.misMaterias().contains(materia)
 	}
 	
 
