@@ -1,0 +1,13 @@
+import estudiantes.*
+import materias.*
+
+test "Un alumno se intenta inscribir a una materia que ya cursó, se rechaza." {
+	
+	var elementosDeProgramacion = new Materia()
+	var libretaJuancito = new Materia()
+	var juancito = new Estudiante()
+	
+	
+	assert.that(true)
+
+}

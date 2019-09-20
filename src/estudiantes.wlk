@@ -40,17 +40,13 @@ class Estudiante {
 		return miLibreta
 	}
 	
-	method agregarCreditos(cantidad){
-		creditos=creditos+cantidad
-	}
-	
 	method creditos(){
+		self.materiasAprobadas().forEach(){materia=>creditos=creditos+materia.creditos()}
 		return creditos
 	}
 
 	method agregarAprobadaLa(materia, nota) {
 		self.materiasAprobadas().add(materia)
-		self.agregarCreditos(materia.creditos())
 		self.miLibreta().registraNota(materia, nota)
 	}
 
