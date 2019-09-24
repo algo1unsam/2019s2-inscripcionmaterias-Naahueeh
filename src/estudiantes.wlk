@@ -5,14 +5,14 @@ class Estudiante {
 	var property materiasInscriptas = #{}
 	var property materiasAprobadas = #{}
 	var property carreras = #{}
-	var miLibreta
+	var property miLibreta
 	var creditos
 
 	method puedoCursarEsta(materia) {
 		return (self.estaEnMisCarrerasEsta(materia) and not self.aprobeEsta(materia) and not self.estoyInscriptoA(materia) and self.preguntarPrerequisitosA(materia))
 	}
 	
-	method inscrbirA(materia){
+	method inscribirA(materia){
 		if(self.puedoCursarEsta(materia)){
 			materia.inscribirA(self)
 		}else{
@@ -35,10 +35,6 @@ class Estudiante {
 	method preguntarPrerequisitosA(materia) {
 		return materia.verificaPrerequisitos(self)
 	}
-
-	method miLibreta() {
-		return miLibreta
-	}
 	
 	method creditos(){
 		self.materiasAprobadas().forEach(){materia=>creditos=creditos+materia.creditos()}
@@ -46,37 +42,43 @@ class Estudiante {
 	}
 
 	method agregarAprobadaLa(materia, nota) {
-		self.materiasAprobadas().add(materia)
-		self.miLibreta().registraNota(materia, nota)
+		if (not self.aproboEsa(materia)){
+			self.materiasAprobadas().add(materia)
+			self.miLibreta().registraNota(materia, nota)
+		} else {
+			self.error("La materia ya tiene una nota asignada")
+		}
+	}
+	
+	method aproboEsa(materia)  {
+		return self.materiasAprobadas().contains(materia)
 	}
 
 }
 
 class LibretaDeEstudiante {
 
-	var alumno
+	var property alumno
 	var property materiasAprobadas = []
 	var property notasMateriasAprobadas = []
 
-	method asignarAlumno(nombre) {
-		alumno = nombre
-	}
-
 	method registraNota(materia, nota) {
-		if (not self.aproboEsa(materia)) {
 			self.materiasAprobadas().add(materia)
 			self.notasMateriasAprobadas().add(nota)
-		} else {
-			self.error("La materia ya tiene una nota asignada")
-		}
-	}
-
-	method aproboEsa(materia)  {
-		return self.materiasAprobadas().contains(materia)
 	}
 
 	method dameLaNotaDe(materia) {
-		return materia
+		var x=0
+		var y
+		self.materiasAprobadas().forEach{unaMateria=>
+			if(unaMateria==materia){
+				y=x
+			}else{
+				x+=1
+			}
+		}
+		var traerNota = self.notasMateriasAprobadas().get(y)
+		return "La nota del alumno "+ self.alumno().toString() + " en la materia " + materia.toString() + " es " + traerNota + "."
 	}
 
 }

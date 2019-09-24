@@ -1,13 +1,61 @@
 import estudiantes.*
 import materias.*
 
-test "Un alumno se intenta inscribir a una materia que ya cursó, se rechaza." {
-	
-	var elementosDeProgramacion = new Materia()
-	var libretaJuancito = new Materia()
-	var juancito = new Estudiante()
-	
-	
-	assert.that(true)
+describe "test"{
 
+	var elementosDeProgramacion
+	var matematica
+	var objetosI
+	var objetosII 
+	var libretaJuancito 
+	var juancito
+	var programacion
+	
+	fixture{
+		
+		elementosDeProgramacion = new Materia()
+		matematica = new Materia()
+		objetosI = new Materia()
+		objetosII = new Materia()
+		libretaJuancito = new LibretaDeEstudiante()
+		juancito = new Estudiante()
+		programacion = new Carrera()
+		juancito.miLibreta(libretaJuancito)
+		juancito.carreras().add(programacion)
+		libretaJuancito.alumno(juancito)
+		programacion.misMaterias().add(elementosDeProgramacion)
+		programacion.misMaterias().add(matematica)
+		programacion.misMaterias().add(objetosI)
+		programacion.misMaterias().add(objetosII)
+		objetosII.correlativas().add(matematica)
+		objetosII.correlativas().add(objetosI)
+		elementosDeProgramacion.tipoPrerequisito(ningunPrerequisito)
+		objetosII.tipoPrerequisito(tieneCorrelativas)
+	}
+	
+	test "Un alumno se intenta inscribir a una materia que ya cursó, se rechaza." {
+
+		elementosDeProgramacion.cupos(20)
+		elementosDeProgramacion.tipoPrerequisito(ningunPrerequisito)
+		juancito.inscribirA(elementosDeProgramacion)
+		juancito.agregarAprobadaLa(elementosDeProgramacion, 5)
+		
+		
+		assert.throwsException({juancito.inscribirA(elementosDeProgramacion)})
+
+	}
+	
+	test "Un alumno se intenta inscribir a una materia pero le falta una correlativa, se rechaza."{
+		juancito.agregarAprobadaLa(matematica, 5)
+		objetosII.cupos(20)
+		assert.throwsException({juancito.inscribirA(objetosII)})
+	}
+	
+	test "Alumno quiere inscribirse a la materia y cumple los requisitos pero no hay cupo. Usar criterio por orden de llegada y el alumno queda en lista de espera."{
+		juancito.agregarAprobadaLa(matematica, 5)
+		juancito.agregarAprobadaLa(objetosI, 5)
+		objetosII.cupos(10)
+		assert.throwsException({juancito.inscribirA(objetosII)})
+	}
+	
 }

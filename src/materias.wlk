@@ -15,7 +15,7 @@ class Materia {
 	var property inscriptos=#{}
 	var property listaDeEspera=[]	
 	var property tipoPrerequisito
-	var cupos
+	var property cupos
 	var property anioAlQuePertenece
 	var property carreraQuePertenece
 	var property correlativas=#{}
@@ -23,7 +23,8 @@ class Materia {
 	
 	method inscribirA(alumno){
 		if(self.inscriptos().size()<cupos){
-			self.inscriptos().add(alumno)			
+			self.inscriptos().add(alumno)
+			alumno.materiasInscriptas().add(self)			
 		}else{
 			self.listaDeEspera().add(alumno)
 		}
