@@ -5,9 +5,18 @@ class Estudiante {
 	var property materiasInscriptas = #{}
 	var property materiasAprobadas = #{}
 	var property carreras = #{}
-	var property miLibreta
+	var miLibreta
 	var creditos
-
+	
+	method asignarLibreta(libreta){
+		miLibreta=libreta
+		miLibreta.asignarAlumno(self)
+	}
+	
+	method miLibreta(){
+		return miLibreta
+	}
+	
 	method puedoCursarEsta(materia) {
 		return (self.estaEnMisCarrerasEsta(materia) and not self.aprobeEsta(materia) and not self.estoyInscriptoA(materia) and self.preguntarPrerequisitosA(materia))
 	}
@@ -37,7 +46,7 @@ class Estudiante {
 	}
 	
 	method creditos(){
-		self.materiasAprobadas().forEach(){materia=>creditos=creditos+materia.creditos()}
+		creditos = self.materiasAprobadas().sum{materia=>materia.creditos()}
 		return creditos
 	}
 
@@ -56,31 +65,37 @@ class Estudiante {
 
 }
 
+//La libreta tiene dos listas (una de materia y una de notas), cada elemento se relaciona con el otro según la posición (el primero de una lista con el primero de la otra, etc) 
 class LibretaDeEstudiante {
 
-	var property alumno
+	var alumno
 	var property materiasAprobadas = []
-	var property notasMateriasAprobadas = []
-
-	method registraNota(materia, nota) {
-			self.materiasAprobadas().add(materia)
-			self.notasMateriasAprobadas().add(nota)
+	
+	method asignarAlumno(persona){
+		alumno=persona
+	}
+	
+	method alumno(){
+		return alumno
 	}
 
-	method dameLaNotaDe(materia) {
-		var x=0
-		var y
-		self.materiasAprobadas().forEach{unaMateria=>
-			if(unaMateria==materia){
-				y=x
-			}else{
-				x+=1
-			}
-		}
-		var traerNota = self.notasMateriasAprobadas().get(y)
-		return "La nota del alumno "+ self.alumno().toString() + " en la materia " + materia.toString() + " es " + traerNota + "."
+	method registraNota(materia, nota) {	
+			self.materiasAprobadas().add(new RenglonLibreta(queMateria=materia,queNota=nota))
+	}
+	
+	method verRenglon(numero){
+		self.materiasAprobadas().get(numero).declararRegistro(alumno)
 	}
 
+}
+
+class RenglonLibreta{
+	var queMateria
+	var queNota
+	
+	method declararRegistro(alumno){
+		return "El alumno "+alumno+" aprobó "+queMateria+" con "+queNota+"."
+	}
 }
 
 object guia{

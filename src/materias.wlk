@@ -7,6 +7,10 @@ class Carrera{
 		return  self.misMaterias().contains(materia)
 	}
 	
+	method agregarMaterias(lista){
+		misMaterias.addAll(lista)
+		lista.forEach{materia=>materia.carreraQuePertenece(self)}
+	}
 
 		
 }
@@ -17,9 +21,10 @@ class Materia {
 	var property tipoPrerequisito
 	var property cupos
 	var property anioAlQuePertenece
-	var property carreraQuePertenece
+	var property carreraQuePertenece // Cuando la materia se agrega a la carrera a la que pertenece, el mismo metodo autocomplta esta variable
 	var property correlativas=#{}
 	var property creditos
+	var property creditosNecesarios
 	
 	method inscribirA(alumno){
 		if(self.inscriptos().size()<cupos){
@@ -62,12 +67,12 @@ object aprobarAnioAnterior{
 
 object necesitaCreditos{
 	method verificarCondicion(materia,alumno){
-		return (alumno.creditos()>=materia.creditos())
+		return (alumno.creditos()>=materia.creditosNecesarios())
 	}
 }
 
 object tieneCorrelativas{
 	method verificarCondicion(materia,alumno){
-		return materia.correlativas().all{correlativa=>alumno.materiasAprobadas().contais(correlativa)}
+		return materia.correlativas().all{correlativa=>alumno.materiasAprobadas().contains(correlativa)}
 	}
 }
