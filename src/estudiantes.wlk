@@ -5,13 +5,8 @@ class Estudiante {
 	var property materiasInscriptas = #{}
 	var property materiasAprobadas = #{}
 	var property carreras = #{}
-	var miLibreta
+	var miLibreta = []
 	var creditos
-	
-	method asignarLibreta(libreta){
-		miLibreta=libreta
-		miLibreta.asignarAlumno(self)
-	}
 	
 	method miLibreta(){
 		return miLibreta
@@ -51,40 +46,16 @@ class Estudiante {
 	}
 
 	method agregarAprobadaLa(materia, nota) {
-		if (not self.aproboEsa(materia)){
+		if (not self.aprobeEsta(materia)){
 			self.materiasAprobadas().add(materia)
-			self.miLibreta().registraNota(materia, nota)
+			self.miLibreta().add(new RenglonLibreta(queMateria=materia,queNota=nota))
 		} else {
 			self.error("La materia ya tiene una nota asignada")
 		}
 	}
 	
-	method aproboEsa(materia)  {
-		return self.materiasAprobadas().contains(materia)
-	}
-
-}
-
-//La libreta tiene dos listas (una de materia y una de notas), cada elemento se relaciona con el otro según la posición (el primero de una lista con el primero de la otra, etc) 
-class LibretaDeEstudiante {
-
-	var alumno
-	var property materiasAprobadas = []
-	
-	method asignarAlumno(persona){
-		alumno=persona
-	}
-	
-	method alumno(){
-		return alumno
-	}
-
-	method registraNota(materia, nota) {	
-			self.materiasAprobadas().add(new RenglonLibreta(queMateria=materia,queNota=nota))
-	}
-	
 	method verRenglon(numero){
-		self.materiasAprobadas().get(numero).declararRegistro(alumno)
+		self.miLibreta().get(numero).declararRegistro(self)
 	}
 
 }
@@ -94,7 +65,7 @@ class RenglonLibreta{
 	var queNota
 	
 	method declararRegistro(alumno){
-		return "El alumno "+alumno+" aprobó "+queMateria+" con "+queNota+"."
+		return "El alumno "+alumno.toString()+" aprobó "+queMateria.toString()+" con "+queNota.toString()+"."
 	}
 }
 

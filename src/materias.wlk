@@ -16,15 +16,21 @@ class Carrera{
 }
 
 class Materia {
-	var property inscriptos=#{}
-	var property listaDeEspera=[]	
+	var inscriptos=#{}
+	var listaDeEspera=[]	
 	var property tipoPrerequisito
 	var property cupos
 	var property anioAlQuePertenece
 	var property carreraQuePertenece // Cuando la materia se agrega a la carrera a la que pertenece, el mismo metodo autocomplta esta variable
-	var property correlativas=#{}
 	var property creditos
-	var property creditosNecesarios
+
+	method inscriptos(){
+		return inscriptos
+	}
+	
+	method listaDeEspera(){
+		return listaDeEspera
+	}
 	
 	method inscribirA(alumno){
 		if(self.inscriptos().size()<cupos){
@@ -37,11 +43,8 @@ class Materia {
 	
 	method darDeBajaA(alumno){
 		self.inscriptos().remove(alumno)
+		alumno.materiasInscriptas().remove(self)
 		self.inscribirA(self.listaDeEspera().first())	
-	}
-	
-	method darListados(){
-		
 	}
 	
 	method verificaPrerequisitos(alumno){
@@ -58,21 +61,23 @@ object ningunPrerequisito{
 	}
 }
 
-object aprobarAnioAnterior{
+class AprobarAnioAnterior{
 	method verificarCondicion(materia,alumno){
 		var queAnio=materia.anioAlQuePertenece()-1
-		return materia.carreraQuePertenece().misMaterias().all{otraMateria=>return(otraMateria.anioAlQuePertenece()==queAnio and alumno.materiasAprobadas().contais(otraMateria))}
+		return materia.carreraQuePertenece().misMaterias().filter({otraMateria=>otraMateria.anioAlQuePertenece()==queAnio}).all{laMateria=>alumno.aprobeEsta(laMateria)}
 	}	
 }
 
-object necesitaCreditos{
+class NecesitaCreditos{
+	var property creditosNecesarios
 	method verificarCondicion(materia,alumno){
-		return (alumno.creditos()>=materia.creditosNecesarios())
+		return (alumno.creditos()>=self.creditosNecesarios())
 	}
 }
 
-object tieneCorrelativas{
+class TieneCorrelativas{
+	var property correlativas=#{}
 	method verificarCondicion(materia,alumno){
-		return materia.correlativas().all{correlativa=>alumno.materiasAprobadas().contains(correlativa)}
+		return self.correlativas().all{correlativa=>alumno.materiasAprobadas().contains(correlativa)}
 	}
 }

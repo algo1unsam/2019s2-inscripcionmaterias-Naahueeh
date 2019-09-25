@@ -7,28 +7,25 @@ describe "test"{
 	var matematica = new Materia()
 	var objetosI = new Materia()
 	var objetosII = new Materia()
-	var libretaJuancito = new LibretaDeEstudiante()
+	var sistemasOperativos = new Materia()
 	var juancito = new Estudiante()
 	var programacion = new Carrera()
 	
 	fixture{
-		
-		juancito.asignarLibreta(libretaJuancito)
 		juancito.carreras().add(programacion)
-		programacion.agregarMaterias([elementosDeProgramacion,matematica,objetosI,objetosII])
-		objetosII.correlativas().add(matematica)
-		objetosII.correlativas().add(objetosI)
+		programacion.agregarMaterias([elementosDeProgramacion,matematica,objetosI,objetosII,sistemasOperativos])
 		elementosDeProgramacion.tipoPrerequisito(ningunPrerequisito)
-		objetosII.tipoPrerequisito(tieneCorrelativas)
+		objetosII.tipoPrerequisito(new TieneCorrelativas(correlativas=#{matematica,objetosI}))
+		sistemasOperativos.tipoPrerequisito(new AprobarAnioAnterior())
 	}
 	
 	test "Un alumno se intenta inscribir a una materia que ya cursó, se rechaza." {
 
 		elementosDeProgramacion.cupos(20)
 		juancito.inscribirA(elementosDeProgramacion)
+		assert.that(juancito.materiasInscriptas().contains(elementosDeProgramacion))	
+		
 		juancito.agregarAprobadaLa(elementosDeProgramacion, 5)
-		
-		
 		assert.throwsException({juancito.inscribirA(elementosDeProgramacion)})
 
 	}
@@ -47,6 +44,18 @@ describe "test"{
 		assert.notThat(juancito.materiasInscriptas().contains(objetosII))
 		assert.equals(1,objetosII.listaDeEspera().size())
 		assert.equals(juancito,objetosII.listaDeEspera().first())
+	}
+	
+	test "Cursar una de segundo"{
+		juancito.agregarAprobadaLa(matematica, 5)
+		juancito.agregarAprobadaLa(objetosI, 5)
+		juancito.agregarAprobadaLa(elementosDeProgramacion, 5)
+		matematica.anioAlQuePertenece(1)
+		elementosDeProgramacion.anioAlQuePertenece(1)
+		objetosI.anioAlQuePertenece(1)
+		objetosII.anioAlQuePertenece(2)
+		sistemasOperativos.anioAlQuePertenece(2)
+		assert.throwsException({juancito.inscribirA(sistemasOperativos)})
 	}
 	
 }
